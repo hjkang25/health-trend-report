@@ -23,6 +23,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run collector
+        env:
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: python main.py
 
       - name: Commit collected CSV files
