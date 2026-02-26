@@ -297,7 +297,8 @@ with tab_compare:
 
             st.caption(
                 f"수집 기간: {pivot.index.min().date()} ~ {pivot.index.max().date()}  "
-                f"|  그룹 {len(pivot.columns)}개"
+                f"|  그룹 {len(pivot.columns)}개  "
+                f"|  ※ 각 날짜별 전체 그룹 합계 = 100 (점유율 %)"
             )
             st.line_chart(pivot, height=320)
 
@@ -317,13 +318,13 @@ with tab_compare:
 
         # 네이버 최신 ratio 테이블 (오늘 또는 최근 수집일)
         if not fkw_naver.empty:
-            st.markdown("**네이버 그룹별 최신 검색 비율 (ratio)**")
+            st.markdown("**네이버 그룹별 최신 검색 점유율 (전체 합 = 100%)**")
             latest_naver = (
                 fkw_naver
                 .sort_values("date", ascending=False)
                 .drop_duplicates("keyword")
                 [["keyword", "ratio"]]
-                .rename(columns={"keyword": "키워드 그룹", "ratio": "검색 비율 (0~100)"})
+                .rename(columns={"keyword": "키워드 그룹", "ratio": "점유율 (%)"})
                 .reset_index(drop=True)
             )
             st.dataframe(
@@ -331,8 +332,8 @@ with tab_compare:
                 use_container_width=True,
                 hide_index=True,
                 column_config={
-                    "검색 비율 (0~100)": st.column_config.ProgressColumn(
-                        "검색 비율",
+                    "점유율 (%)": st.column_config.ProgressColumn(
+                        "점유율 (%)",
                         min_value=0,
                         max_value=100,
                         format="%.1f",
