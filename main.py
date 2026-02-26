@@ -66,8 +66,7 @@ def main() -> None:
     keywords = get_trending_health_keywords(top_n=args.top)
 
     if not keywords:
-        logger.error("Google 키워드 수집 결과가 없습니다. 종료합니다.")
-        sys.exit(1)
+        logger.warning("Google 키워드 수집 결과가 없습니다. Naver 데이터로 계속합니다.")
 
     # 2. 네이버 트렌드 수집 (API 키 없으면 건너뜀)
     logger.info("[2/4] 네이버 검색트렌드 수집 중...")
@@ -82,6 +81,11 @@ def main() -> None:
         logger.warning("네이버 수집 건너뜀 — %s", e)
     except Exception as e:
         logger.warning("네이버 API 오류 (건너뜀): %s", e)
+
+    # Google·Naver 모두 실패한 경우에만 종료
+    if not keywords:
+        logger.error("Google·Naver 모두 수집 결과가 없습니다. 종료합니다.")
+        sys.exit(1)
 
     # 3. 키워드 CSV 저장 (Google + Naver 통합)
     kw_file = save_keywords(keywords, run_date=run_date)
